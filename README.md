@@ -4,4 +4,4 @@ This project contains the API specification for [Yup](https://yup.io/)'s api(s).
 
 ## Preview
 
-You can view the specification the Swagger UI or on [Redocly](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/callmekatootie/yup-api-specification/master/index.yaml)
+You can view the specification the Swagger UI or on [Redocly](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/callmekatootie/yup-api-specification/master/index.yml)
