@@ -1,0 +1,743 @@
+openapi: 3.0.3
+info:
+  title: API Specification for Yup
+  description: >
+    Yup is a network that rewards you for good opinions. By doing so, it creates
+    a social consensus layer for the internet, accurately representing the
+    agreed-upon social value of anything, from random Tweets to your history
+    professor. It does this by interacting with the Yup Protocol, which is a
+    decentralized semi-autonomous social consensus protocol that determines the
+    rewards and social value of all content based on users' interactions with
+    it.
+
+
+    For more details refer to the [documentation](https://docs.yup.io/)
+  contact:
+    email: community@yup.io
+  license:
+    name: MIT
+    url: 'https://opensource.org/licenses/MIT'
+  version: 0.0.1
+servers:
+  - url: 'http://api.yup.io'
+    description: Base
+  - url: 'http://api.yup.io/v2'
+    description: Version 2
+tags:
+  - name: Metrics
+    description: Analytics about the platform
+  - name: Posts
+    description: a.k.a votes
+  - name: Users
+    description: The users of the platform
+paths:
+  '/metrics/total-votes':
+    get:
+      summary: Get total transactions
+      description: View the total transactions carried out on the platform
+      tags:
+        - Metrics
+      operationId: getTotalVotes
+      servers:
+        - url: 'http://api.yup.io'
+      responses:
+        '200':
+          description: The request was successful.
+          content:
+            text/html:
+              schema:
+                type: number
+                example: 3740098
+  '/posts/post/{postId}':
+    get:
+      summary: Get a post's details
+      description: Get all the details for a given post
+      tags:
+        - Posts
+      operationId: getPostInfo
+      parameters:
+        - $ref: '#/components/parameters/postId'
+      servers:
+        - url: 'http://api.yup.io'
+      responses:
+        '200':
+          description: The request was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/postInfo'
+  '/posts/interactions/{postId}':
+    get:
+      summary: Get a post's interactions
+      description: Get the interactions (votes) on a given post
+      tags:
+        - Posts
+      operationId: getPostInteractions
+      parameters:
+        - $ref: '#/components/parameters/postId'
+      servers:
+        - url: 'http://api.yup.io'
+      responses:
+        '200':
+          description: The request was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/postInteractions'
+  '/votes/post/{postId}/voter/{username}':
+    get:
+      summary: Get a member's votes for a post
+      description: Get details about the type of votes from a meber for a given post
+      tags:
+        - Posts
+      operationId: getPostVotesForUsername
+      parameters:
+        - $ref: '#/components/parameters/postId'
+        - $ref: '#/components/parameters/username'
+      servers:
+        - url: 'http://api.yup.io'
+      responses:
+        '200':
+          description: The request was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/postInteractions'
+  '/comments/post/{postId}':
+    get:
+      summary: Get a post's comments
+      description: Get the comments on a given post
+      tags:
+        - Posts
+      operationId: getPostComments
+      parameters:
+        - $ref: '#/components/parameters/postId'
+      servers:
+        - url: 'http://api.yup.io/v2'
+      responses:
+        '200':
+          description: The request was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/postComments'
+
+  '/levels':
+    get:
+      summary: Get users
+      description: Get ALL users of the platform
+      tags:
+        - Users
+      operationId: getUsers
+      servers:
+        - url: 'http://api.yup.io'
+      responses:
+        '200':
+          description: The request was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/users'
+  '/levels/users/{username}':
+    get:
+      summary: Get a single user
+      description: Get a user identified by the provided username
+      tags:
+        - Users
+      operationId: getUserByUsername
+      parameters:
+        - $ref: '#/components/parameters/username'
+      servers:
+        - url: 'http://api.yup.io'
+      responses:
+        '200':
+          description: The request was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+  '/accounts/{username}':
+    get:
+      summary: Get a single user's account
+      description: Get account details of a user identified by the provided username
+      tags:
+        - Users
+      operationId: getAccountByUsername
+      parameters:
+        - $ref: '#/components/parameters/username'
+      servers:
+        - url: 'http://api.yup.io'
+      responses:
+        '200':
+          description: The request was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/account'
+  '/followers/{username}':
+    get:
+      summary: Get a user's followers
+      description: Get the followers for a given user
+      tags:
+        - Users
+      operationId: getUserFollowers
+      parameters:
+        - $ref: '#/components/parameters/username'
+      servers:
+        - url: 'http://api.yup.io/v2'
+      responses:
+        '200':
+          description: The request was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/followers'
+  '/following/{username}':
+    get:
+      summary: Get a user's followings
+      description: Get the followings for a given user
+      tags:
+        - Users
+      operationId: getUserFollowings
+      parameters:
+        - $ref: '#/components/parameters/username'
+      servers:
+        - url: 'http://api.yup.io'
+      responses:
+        '200':
+          description: The request was successful.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  '/accounts/actionusage/{eosname}':
+    get:
+      summary: Get a user's action usage
+      description: Get the action usage for a given user's EOS Name
+      tags:
+        - Users
+      operationId: getAccountsByEOSName
+      parameters:
+        - $ref: '#/components/parameters/eosname'
+      servers:
+        - url: 'http://api.yup.io'
+      responses:
+        '200':
+          description: The request was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/actionusage'
+  
+
+components:
+  parameters:
+    postId:
+      name: postId
+      in: path
+      description: The id of the post / vote
+      required: true
+      schema:
+        type: string
+    username:
+      name: username
+      in: path
+      description: The username of the user
+      required: true
+      schema:
+        type: string
+    eosname:
+      name: eosname
+      in: path
+      description: The EOS name of the user
+      required: true
+      schema:
+        type: string
+  schemas:
+    votes:
+      type: object
+      properties:
+        up:
+          type: integer
+        down:
+          type: integer
+    ratings:
+      type: object
+      properties:
+        ratingAvg:
+          type: number
+        ratingCount:
+          type: integer
+        ratingSum:
+          type: integer
+    weight:
+      type: object
+      properties:
+        overall:
+          type: number
+        popularity:
+          type: number
+        intelligence:
+          type: number
+        funny:
+          type: number
+        chill:
+          type: number
+        useful:
+          type: number
+        knowledgeable:
+          type: number
+        engaging:
+          type: number
+        easy:
+          type: number
+        interesting:
+          type: number
+        affordable:
+          type: number
+        beautiful:
+          type: number
+        expensive:
+          type: number
+        wouldelect:
+          type: number
+        agreewith:
+          type: number
+        trustworthy:
+          type: number
+        original:
+          type: number
+    quantiles:
+      type: object
+      properties:
+        overall:
+          type: string
+        popularity:
+          type: string
+        intelligence:
+          type: string
+        funny:
+          type: string
+        chill:
+          type: string
+        useful:
+          type: string
+        knowledgeable:
+          type: string
+        engaging:
+          type: string
+        easy:
+          type: string
+        interesting:
+          type: string
+        affordable:
+          type: string
+        beautiful:
+          type: string
+        expensive:
+          type: string
+        wouldelect:
+          type: string
+        agreewith:
+          type: string
+        trustworthy:
+          type: string
+        original:
+          type: string
+    sextiles:
+      type: object
+      properties:
+        overall:
+          type: string
+        popularity:
+          type: string
+        intelligence:
+          type: string
+        funny:
+          type: string
+        chill:
+          type: string
+        useful:
+          type: string
+        knowledgeable:
+          type: string
+        engaging:
+          type: string
+        easy:
+          type: string
+        interesting:
+          type: string
+        affordable:
+          type: string
+        beautiful:
+          type: string
+        expensive:
+          type: string
+        wouldelect:
+          type: string
+        agreewith:
+          type: string
+        trustworthy:
+          type: string
+        original:
+          type: string
+    postInfo:
+      type: object
+      properties:
+        weights:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/weight'
+        avatar:
+          type: string
+        quantiles:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/quantiles'
+        sextiles:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/sextiles'
+        _id:
+          type: object
+          properties:
+            postid:
+              type: string
+        tag:
+          type: string
+        catVotes:
+          type: object
+          properties:
+            overall:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/votes'
+            popularity:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/votes'
+            intelligence:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/votes'
+            funny:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/votes'
+            chill:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/votes'
+            useful:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/votes'
+            knowledgeable:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/votes'
+            engaging:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/votes'
+            easy:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/votes'
+            interesting:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/votes'
+            affordable:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/votes'
+            beautiful:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/votes'
+            expensive:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/votes'
+            wouldelect:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/votes'
+            agreewith:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/votes'
+            trustworthy:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/votes'
+            original:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/votes'
+        rating:
+          type: object
+          properties:
+            overall:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/ratings'
+            popularity:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/ratings'
+            intelligence:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/ratings'
+            funny:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/ratings'
+            chill:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/ratings'
+            useful:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/ratings'
+            knowledgeable:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/ratings'
+            engaging:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/ratings'
+            easy:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/ratings'
+            interesting:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/ratings'
+            affordable:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/ratings'
+            beautiful:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/ratings'
+            expensive:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/ratings'
+            wouldelect:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/ratings'
+            agreewith:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/ratings'
+            trustworthy:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/ratings'
+            original:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/ratings'
+        postConfirmed:
+          type: boolean
+        author:
+          type: string
+        timestamp:
+          type: string
+        caption:
+          type: string
+        imgHash:
+          type: string
+        videoHash:
+          type: string
+        previewData:
+          type: object
+          properties:
+            img:
+              type: string
+            url:
+              type: string
+            title:
+              type: string
+            siteName:
+              type: string
+            description:
+              type: string
+            mediaType:
+              type: string
+            contentType:
+              type: string
+            images:
+              type: array
+              items:
+                type: string
+            videos:
+              type: array
+              items:
+                type: string
+            favicons:
+              type: array
+              items:
+                type: string
+        lastUpdated:
+          type: string
+        assocPostId:
+          type: string
+        onchain:
+          type: boolean
+        postType:
+          type: string
+        lang:
+          type: string
+    postComments:
+      type: array
+      items:
+        type: object
+        properties:
+          _id:
+            type: string
+          postid:
+            type: string
+          author:
+            type: string
+          timestamp:
+            type: string
+          lastUpdated:
+            type: string
+          comment:
+            type: string
+    postInteractions:
+      type: array
+      items:
+        type: object
+        properties:
+          category:
+            type: string
+          influence:
+            type: number
+          lastUpdated:
+            type: string
+          like:
+            type: boolean
+          onchain:
+            type: boolean
+          postid:
+            type: string
+          rating:
+            type: integer
+          timestamp:
+            type: string
+          voteConfirmed:
+            type: boolean
+          voter:
+            type: string
+          _id:
+            type: object
+            properties:
+              voteid:
+                type: string
+    account:
+      type: object
+      properties:
+        _id:
+          type: string
+        avatar:
+          type: string
+        balance:
+          type: object
+          properties:
+            EOS:
+              type: number
+            YUPX:
+              type: number
+            YUP:
+              type: number
+            YUPETH:
+              type: number
+        bio:
+          type: string
+        fullname:
+          type: string
+        twitterInfo:
+          type: object
+          properties:
+            username:
+              type: string
+            userId:
+              type: string
+            isTracked:
+              type: boolean
+            isMirror:
+              type: boolean
+            isAuthUser:
+              type: boolean
+        username:
+          type: string
+        weight:
+          type: number
+        cum_deposit_time:
+          type: number
+        esoname:
+          type: string
+        total_vote_value:
+          type: number
+        hasTie:
+          type: boolean
+        level:
+          type: number
+    user:
+      type: object
+      properties:
+        quantile:
+          type: string
+        sextile:
+          type: string
+      allOf:
+            - $ref: '#/components/schemas/account'
+    users:
+      type: array
+      items:
+        type: object
+        allOf:
+          - $ref: '#/components/schemas/user'
+    followers:
+      type: array
+      items:
+        type: object
+        properties:
+          _id:
+            type: object
+            properties:
+              account:
+                type: string
+          following:
+            type: boolean
+    actionusage:
+      type: object
+      properties:
+        account:
+          type: string
+        lastReset:
+          type: integer
+        createAcctCount:
+          type: integer
+        createVoteCount:
+          type: integer
+        followCount:
+          type: integer
+        createComCount:
+          type: integer
+        createPostCount:
+          type: integer
+        
